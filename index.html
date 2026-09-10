@@ -4,6 +4,15 @@
     <!-- Sbloccato lo zoom in tutte le direzioni: minimum-scale=0.1 permette di allontanare completamente la visuale -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.1, maximum-scale=5.0, user-scalable=yes">
     <title>Gestione Integrata Controvento</title>
+    <!-- ===== PWA: installabile come app sul telefono ===== -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#3d6482">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Controvento">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
@@ -1672,6 +1681,17 @@
                 switchView('presenze', true);
             }
         });
+    </script>
+
+    <!-- ===== PWA: registrazione service worker (offline + installazione) ===== -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('sw.js').catch(function (e) {
+                    console.warn('Service worker non registrato:', e);
+                });
+            });
+        }
     </script>
 
 </body></html>
