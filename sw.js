@@ -1,11 +1,11 @@
 /* Service worker Controvento - offline + installazione PWA */
-const CACHE = 'controvento-v1';
+const CACHE = 'controvento-v3';
 const ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png'
+  './icon192.png',
+  './icon512.png'
 ];
 
 self.addEventListener('install', function (e) {
@@ -28,15 +28,17 @@ self.addEventListener('fetch', function (e) {
   var req = e.request;
   if (req.method !== 'GET') return;
 
-  // La pagina: prima la rete (così gli aggiornamenti si vedono subito), poi la cache se offline
-  if (req.mode === 'navigate') {
+  // La pagina e il manifest: prima la rete (aggiornamenti immediati), poi la cache se offline
+  if (req.mode === 'navigate' || req.url.indexOf('manifest.webmanifest') !== -1) {
     e.respondWith(
       fetch(req).then(function (res) {
         var copy = res.clone();
-        caches.open(CACHE).then(function (c) { c.put('./index.html', copy); });
+        caches.open(CACHE).then(function (c) { c.put(req, copy); });
         return res;
       }).catch(function () {
-        return caches.match('./index.html').then(function (r) { return r || caches.match('./'); });
+        return caches.match(req).then(function (r) {
+          return r || caches.match('./index.html') || caches.match('./');
+        });
       })
     );
     return;
